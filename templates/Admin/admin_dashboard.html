@@ -1,0 +1,138 @@
+{% extends 'Admin/admin_header.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="content-body">
+	<div class="container-fluid">
+
+		
+		<!-- row -->
+		<div class="row">
+			
+			
+			
+			
+			<div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+				<div class="widget-stat card bg-danger">
+					<div class="card-body  p-4">
+						<div class="media">
+							<span class="me-3">
+								<i class="fas fa-cogs"></i>
+							</span>
+							<div class="media-body text-white text-end">
+								<p class="mb-1">Auto Tickets</p>
+								<h3 class="text-white">{{auto_tickets_count}}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+				<div class="widget-stat card bg-success">
+					<div class="card-body p-4">
+						<div class="media">
+							<span class="me-3">
+								<i class="fas fa-wrench"></i>
+							</span>
+							<div class="media-body text-white text-end">
+								<p class="mb-1">Manual Tickets</p>
+								<h3 class="text-white">{{manual_tickets_count}}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+				<div class="widget-stat card bg-info">
+					<div class="card-body p-4">
+						<div class="media">
+							<span class="me-3">
+								<i class="fas fa-users"></i>
+							</span>
+							<div class="media-body text-white text-end">
+								<p class="mb-1">Enginners Count</p>
+								<h3 class="text-white">{{engineers_count}}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-3 col-xxl-6 col-lg-6 col-sm-6">
+				<div class="widget-stat card bg-primary">
+					<div class="card-body p-4">
+						<div class="media">
+							<span class="me-3">
+								<i class="fas fa-list-alt"></i>
+							</span>
+							<div class="media-body text-white text-end">
+								<p class="mb-1">Overall Tickets</p>
+								<h3 class="text-white">{{overall_tickets_count}}</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			
+			
+		
+			<div class="col-xl-12 col-lg-12 col-xxl-12 col-sm-12">
+				<div class="card">
+					<div class="card-header">
+						<h4 class="card-title">Recent Manual Tickets</h4>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive recentOrderTable">
+							<table class="table verticle-middle table-responsive-md">
+								<thead>
+									<tr>
+										<th scope="col">S.No</th>
+										<th scope="col">Category Name</th>
+										<th scope="col">Subcategory Name</th>
+										<th scope="col">Ticket no</th>
+										<th scope="col">Created date</th>
+										<th scope="col">Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for i in manual_tickets|slice:":10" %}
+										<tr>
+											<td>{{ forloop.counter }}</td>
+											<td>{{ i.category }}</td>
+											<td>{{ i.subcategory }}</td>
+											<td>{{ i.id|dynamic_zfill:i.store_code }}</td>
+											<td>{{ i.created }}</td>                                                   
+											 <td>
+												{% if i.status == 'open' %}
+													<span class="badge badge-success" style="font-size: 10px;">Open</span>
+												{% elif i.status == 'inprogress' %}
+													<span class="badge badge-info" style="font-size: 10px;">In Progress</span>
+												{% elif i.status == 'pending' %}
+													<span class="badge badge-warning" style="font-size: 10px;">Pending</span>
+												{% elif i.status == 'closed' %}
+													<span class="badge badge-danger" style="font-size: 10px;">Closed</span>
+												{% elif i.status == 'Assigned' %}
+													<span class="badge badge-secondary" style="font-size: 10px;">Assigned</span>
+												{% else %}
+													<span class="badge badge-primary" style="font-size: 10px;">{{ i.status }}</span>
+												{% endif %}
+											</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+		</div>
+		
+	
+	
+</div>
+</div>
+{% endblock %}

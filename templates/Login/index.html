@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'Login/images/titanlogo.png' %}">
+	<title>Titan|Login page</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="Login/images/titanlogo.png"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'Login/vendor/bootstrap/css/bootstrap.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'Login/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'Login/vendor/animate/animate.css' %}">
+<!--====================================================
+
+===========================================-->	
+	<link rel="stylesheet" type="text/css" href="{% static 'Login/vendor/css-hamburgers/hamburgers.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'Login/vendor/select2/select2.min.css' %}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{% static 'Login/css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'Login/css/main.css' %}">
+<!--===============================================================================================-->
+<style>
+         .error-message {
+         display: none;
+         color: red;
+         margin-top: 5px;
+         }
+</style>
+
+</head>
+<body style="background-image: url(static/Login/images/tb4.png);background-repeat: no-repeat;background-size: cover;">
+	 {% if messages %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+         {% for message in messages %}
+         {{ message }}
+         {% endfor %}
+           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endif %}
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="{% static 'Login/images/logo.png' %}" alt="IMG">
+				</div>
+
+				<form class="login100-form validate-form" id="login-form" action="#" method="post">
+          {% csrf_token %}
+					<span class="login100-form-title">
+						<center>
+						            <h2>Welcome to Titan, <span style="color: #5dbfbb; font-family: 'Courier New', Courier, monospace; font-weight: 900;">
+               {{welcome_message}}</span>
+            </h2>
+						</center>
+		 					</span>
+     
+					<div class="wrap-input100 validate-input" data-validate = "[A-Za-z\s]+ : Enter a valid name (only alphabetical characters)">
+						<input class="input100" type="text" class="form-control" id="username" name="username" required pattern="[A-Za-z\s]+" title="Enter a valid name (only alphabetical characters)" placeholder="username">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user" aria-hidden="true"></i>
+						</span>
+            <span class="error-message" id="usernameError">Please enter a valid Username.</span>
+
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						<input class="input100" type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+                <span class="error-message" id="passwordError">Please enter a valid Password.</span>
+
+					</div>
+					  <div class="error-message">{{ error_message }}</div>
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn" type="submit" id="submit" value="Log In">
+							Login
+						</button>
+					</div>
+
+
+
+				</form>
+				
+			</div>
+		</div>
+	</div>
+	
+	
+
+	
+<!--===============================================================================================-->	
+	<script src="{% static 'Login/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'Login/vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'Login/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'Login/vendor/select2/select2.min.js' %}"></script>
+<!--===============================================================================================-->
+	<script src="{% static 'Login/vendor/tilt/tilt.jquery.min.js' %}"></script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+<!--===============================================================================================-->
+	<script src="{% static 'Login/js/main.js' %}"></script>
+
+</body>
+</html>

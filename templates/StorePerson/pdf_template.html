@@ -1,0 +1,79 @@
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            width: 20px; /* Adjust the size of the PDF icon image */
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .download-link {
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+            margin-top: 10px;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ticket Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Ticket Number</th>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in all_tickets %}
+            <tr>
+                <td>{{ ticket.id|dynamic_zfill:ticket.store_code }}</td>
+                <td>{{ ticket.category }}</td>
+                <td>{{ ticket.subcategory }}</td>
+                <td>{{ ticket.created }}</td>
+                <td>{{ ticket.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

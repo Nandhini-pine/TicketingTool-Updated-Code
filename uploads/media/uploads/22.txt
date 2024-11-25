@@ -1,0 +1,47 @@
+493	"System of Audit"	"2024-06-04"	16.0	2	1	1
+494	"Regularity of Audit"	"2024-06-04"	12.0	2	2	1
+495	"Action taken on remarks in rough audit sheet"	"2024-06-04"	10.0	2	3	1
+496	"Regularity of council meeting"	"2024-06-04"	12.0	2	4	1
+497	"Awareness about 5S"	"2024-06-04"	3.0	2	5	1
+498	"Status of 1S"	"2024-06-04"	8.0	2	6	1
+499	"Status of 2S"	"2024-06-04"	12.0	2	7	1
+500	"Status of Cleanliness"	"2024-06-04"	16.0	2	8	1
+501	"Individual responsibility"	"2024-06-04"	15.0	2	9	1
+502	"Action on lowest marks in self audit"	"2024-06-04"	12.0	2	10	1
+503	"Status of ""Action to be taken/job to be done"""	"2024-06-04"	9.0	2	11	1
+504	"Status of Standard practices"	"2024-06-04"	6.0	2	12	1
+505	"Follow-up of Standard practices"	"2024-06-04"	4.0	2	13	1
+506	"Visual Management"	"2024-06-04"	8.0	2	14	1
+507	"General Feeling about benefit from 5S"	"2024-06-04"	9.0	2	15	1
+508	"Before & After status Photograph"	"2024-06-04"	16.0	2	16	1
+509	"Zone/Sub zone Leader room"	"2024-06-04"	12.0	2	17	1
+510	"HOD’s Room"	"2024-06-04"	15.0	2	18	1
+511	"Special Activity"	"2024-06-04"	6.0	2	19	1
+512	"Display of score board"	"2024-06-04"	9.0	2	20	1
+513	"Presentation to steering committee"	"2024-06-04"	6.0	2	21	1
+514	"Action taken on previous management audit"	"2024-06-04"	8.0	2	22	1
+
+
+515     "System of Audit" "2024-07-04"		16.0	2	1	1
+516	"Regularity of Audit" 	"2024-07-04"		12.0	2	2	1
+517	"Action taken on remarks in rough audit sheet" "2024-07-04"	10.0	2	3	1
+518	"Regularity of council meeting" "2024-07-04"		8.0	2	4	1
+519	"Awareness about 5S" "2024-07-04"	6.0	2	5	1
+520	"Status of 1S" "2024-07-04"		8.0	2	6	1
+521	"Status of 2S" "2024-07-04"	4.0	2	7	1
+522	"Status of Cleanliness" "2024-07-04"	4.0	2	8	1
+523	"Individual responsibility"  "2024-07-04"	3.0	2	9	1
+524	"Action on lowest marks in self audit"  "2024-07-04"	6.0	2	10	1
+525	"Status of ""Action to be taken/job to be done" "2024-07-04"	9.0	2	11	1
+526	"Status of Standard practices"  "2024-07-04"	12.0	2	12	1
+527	"Follow-up of Standard practices"  "2024-07-04"	20.0	2	13	1
+528	"Visual Management"  "2024-07-04"	16.0	2	14	1
+529	"General Feeling about benefit from 5S"	"2024-07-04"		9.0	2	15	1
+530	"Before & After status Photograph"	"2024-07-04"		8.0	2	16	1
+531	"Zone/Sub zone Leader room"	"2024-07-04"		16.0	2	17	1
+532	"HOD’s Room"	"2024-07-04"		15.0	2	18	1
+533	"Special Activity"	"2024-07-04"		8.0	2	19	1
+534	"Display of score board"	"2024-07-04"		9.0	2	20	1
+535	"Presentation to steering committee"	"2024-07-04"		9.0	2	21	1
+536	"Action taken on previous management audit" "2024-07-04"	12.0	2	22	1
+
