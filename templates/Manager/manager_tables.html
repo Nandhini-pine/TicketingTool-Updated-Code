@@ -341,75 +341,97 @@ white-space: nowrap !important;
 
                                 <div class="table-responsive ticket-table">
                                 <table style="min-width: 845px" class="table">
-                                <thead>
-                                    <tr data-status="{{ ticket.status }}">
-                                    
-                                    <th>S.No</th>
-                                    <th>Category of Ticket</th>
-                                    <th>SubCategory of Ticket</th>
-                                    <th>TICKET NO</th>
-                                    <th>Ticket Created Date</th>
-                                    <th>Short Description</th>
-                                    <th>Detailed Description</th>
-                                    <th>Assigned To</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                        
-                                    </tr>
-                                </thead>
-                                
-                                <tbody>
-                                    {% for ticket in all_tickets %}
-                                    <tr data-status="{{ ticket.status }}"> 
-                                      
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{ ticket.category }}</td>
-                                        <td>{{ticket.subcategory}}</td>
-                                        <td>{{ ticket.id|dynamic_zfill:ticket.store_code }}</td>
-                                        <td>{{ticket.created}}</td>
-                                        <td>{{ticket.short_description}}</td>
-                                        <td>{{ticket.detailed_description}}</td>
-                                        <td>{{ticket.assignee}}</td>
-                                        <td>
-                                            {% if ticket.status == 'open' %}
-                                            <span class="badge badge-danger custom-badge" style="font-size: 10px; width: 80px;";>{{ ticket.status }}</span>
-                                            {% elif ticket.status == 'assigned' %}
-                                            <span class="badge badge-secondary custom-badge" style="font-size: 10px; width: 80px;">{{ ticket.status }}</span>
-                                            {% elif ticket.status == 'inprogress' %}
-                                            <span class="badge badge-info custom-badge" style="font-size: 10px; width: 80px;">{{ ticket.status }}</span>
-                                            {% elif ticket.status == 'pending' %}
-                                            <span class="badge badge-warning custom-badge" style="font-size: 10px; width: 80px;">{{ ticket.status }}</span>
-                                            {% elif ticket.status == 'closed' %}
-                                            <span class="badge badge-success custom-badge" style="font-size: 10px; width: 80px;">Closed</span>
-                                            {% elif ticket.status == 'reopen' %}
-                                            <span class="badge badge-warning custom-badge" style="font-size: 10px; width: 80px;background-color: #c60e82; color: white;">Reopen</span>
-                                            {% elif ticket.status == 'Resolved' %}
-                                            <span class="badge badge-primary custom-badge" style="font-size: 10px; width: 80px;">{{ ticket.status }}</span>
-                                                                                       
-                                            {% else %}
-                                                {{ ticket.status }}
-                                            {% endif %}
-                                        </td>
-                                
-                                        <td>
-                                            <div class="d-flex">
-                                                <a href="#" class="btn  shadow btn-xs sharp view-ticket-btn me-1" style="background-color:#1E3050; color:white" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
-                                                    <i class="fa fa-eye"></i> View <!-- View button -->
-                                                </a>
-                                                
-                                                
-                                            </div>
-                                        </td> 
-                                    </tr>
-                                   
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                S.No
+                                                <select id="filterSNo" onchange="filterTable(0)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                Category of Ticket
+                                                <select id="filterCategory" onchange="filterTable(1)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                SubCategory of Ticket
+                                                <select id="filterSubCategory" onchange="filterTable(2)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                TICKET NO
+                                                <select id="filterTicketNo" onchange="filterTable(3)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                Ticket Created Date
+                                                <select id="filterDate" onchange="filterTable(4)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                Short Description
+                                                <select id="filterShortDesc" onchange="filterTable(5)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                Detailed Description
+                                                <select id="filterDetailedDesc" onchange="filterTable(6)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                Assigned To
+                                                <select id="filterAssignee" onchange="filterTable(7)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                Status
+                                                <select id="filterStatus" onchange="filterTable(8)">
+                                                    <option value="">All</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ticket in all_tickets %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ ticket.category }}</td>
+                                            <td>{{ ticket.subcategory }}</td>
+                                            <td>{{ ticket.id|dynamic_zfill:ticket.store_code }}</td>
+                                            <td>{{ ticket.created }}</td>
+                                            <td>{{ ticket.short_description }}</td>
+                                            <td>{{ ticket.detailed_description }}</td>
+                                            <td>{{ ticket.assignee }}</td>
+                                            <td>{{ ticket.status }}</td>
+                                            <td>
 
-                                  
-                                    {% endfor %}
-                                </tbody>
-                                
-                                
-                                
+                                                <div class="d-flex">
+    
+                                                    <a href="#" class="btn  shadow btn-xs sharp view-ticket-btn me-1" style="background-color:#1E3050; color:white" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+    
+                                                        <i class="fa fa-eye"></i> View <!-- View button -->
+    
+                                                    </a>
+    
+                                                </div>
+    
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
                                  </table>
+                                 
                                 </div>
                             </div>
                             {% for ticket in all_tickets %}
@@ -595,6 +617,83 @@ white-space: nowrap !important;
                                     </ul>
                                 </div>
                             </div>
+
+                            <!--Script for Filter option for all fields-->
+                            <script>
+                                // Populate dropdowns with unique values
+function populateDropdowns() {
+    const table = document.querySelector(".table tbody");
+    const rows = table.querySelectorAll("tr");
+
+    const dropdowns = [
+        "filterSNo", "filterCategory", "filterSubCategory",
+        "filterTicketNo", "filterDate", "filterShortDesc",
+        "filterDetailedDesc", "filterAssignee", "filterStatus"
+    ];
+
+    dropdowns.forEach((dropdownId, colIndex) => {
+        const dropdown = document.getElementById(dropdownId);
+        const uniqueValues = new Set();
+
+        rows.forEach(row => {
+            const cell = row.cells[colIndex];
+            if (cell) uniqueValues.add(cell.textContent.trim());
+        });
+
+        uniqueValues.forEach(value => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            dropdown.appendChild(option);
+        });
+    });
+}
+
+// Filter table based on dropdown selection
+function filterTable(columnIndex) {
+    const dropdowns = document.querySelectorAll("thead select");
+    const filters = Array.from(dropdowns).map(dropdown => dropdown.value.toLowerCase());
+    const table = document.querySelector(".table tbody");
+    const rows = table.querySelectorAll("tr");
+    let rowsShown = 0;
+
+    rows.forEach(row => {
+        let showRow = true;
+
+        filters.forEach((filter, colIndex) => {
+            if (filter && row.cells[colIndex].textContent.toLowerCase() !== filter) {
+                showRow = false;
+            }
+        });
+
+        row.style.display = showRow ? "" : "none";
+        if (showRow) rowsShown++;
+    });
+
+    // Show message if no rows are visible
+    const noResultsMessage = document.getElementById("noResultsMessage");
+    if (rowsShown === 0) {
+        noResultsMessage.style.display = "block";
+    } else {
+        noResultsMessage.style.display = "none";
+    }
+}
+
+// Initialize dropdowns and set up 'No Results' message on page load
+document.addEventListener("DOMContentLoaded", () => {
+    populateDropdowns();
+
+    const tableContainer = document.querySelector(".table-responsive");
+    const noResultsMessage = document.createElement("div");
+    noResultsMessage.id = "noResultsMessage";
+    noResultsMessage.textContent = "No results found.";
+    noResultsMessage.style.cssText = "display: none; text-align: center; color: red; margin-top: 10px;";
+    tableContainer.appendChild(noResultsMessage);
+});
+
+
+                                
+                            </script>
 
                             <script>
                             document.addEventListener("DOMContentLoaded", function () {

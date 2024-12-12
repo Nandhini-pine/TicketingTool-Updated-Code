@@ -1,0 +1,687 @@
+{% extends 'CFAPerson/CFAPerson_header.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+
+    <style>
+               /* Style for the dropdown container */
+               .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+/* Style the dropdown icon */
+.fa-chevron-down {
+    /* Your icon styles */
+    margin-left: 5px; /* Adjust the margin as needed */
+    color: #fff;     /* Icon color */
+    font-size: 12px; /* Icon size */
+        /* Style for the dropdown button */
+}
+        .dropdown-button {
+            background-color: #61b9b5;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Style for the dropdown content */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            border: 1px solid #ccc;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* Style for the options in the dropdown */
+        .dropdown-content label {
+            display: block;
+            padding: 5px;
+        }
+        .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.pagination-left {
+    flex-grow: 1;
+}
+
+.pagination-right {
+    display: flex;
+    align-items: center;
+}
+
+.pagination-list {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.pagination-list li {
+    margin: 0 5px;
+}
+
+.pagination-list a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 4px solid #61b9b5;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #61b9b5;
+}
+
+.pagination-list a.active {
+    background-color: #378f8a;
+    color: #fff;
+    border-color: #378f8a;
+}
+
+.pagination-list a:hover {
+    background-color: #378f8a;
+    color: #fff;
+    border-color: #378f8a;
+}
+
+        /* Style for the search container */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* To position the button on the right */
+    margin-top: 10px; /* Adjust as needed */
+}
+
+/* Style for the search input field */
+#searchInput {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 5px; /* Spacing between input and button */
+   
+}
+
+/* Style for the search button */
+#searchButton {
+    background-color: #1E3050; /* Button background color */
+    color: white; /* Button text color */
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+/* Hover effect for the button (optional) */
+#searchButton:hover {
+    background-color: #378f8a; /* Change color on hover */
+}
+ @media (max-width: 767px) {
+
+.text-nowrap-on-desktop {
+
+    white-space: normal !important;
+
+}
+
+}
+
+
+
+@media (min-width: 768px) {
+
+.text-nowrap-on-desktop {
+
+    white-space: nowrap !important;
+
+}
+
+}
+    /* Adjust styles for small screens */
+    @media screen and (max-width: 767px) {
+        .search-container {
+            flex-direction: row;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .dropdown-button {
+            margin-top: 10px; /* Add space between filter button and other elements */
+        }
+
+        .export-icon {
+            margin-top: 10px; /* Add space between export icons and other elements */
+        }
+    }
+ /* Customize the modal header */
+ .modal-header {
+        background-color: #61b9b5;
+        color: #fff;
+    }
+
+    /* Style the modal title */
+    .modal-title {
+        font-size: 24px;
+    }
+
+    /* Style the Close button */
+    .btn-close {
+        color: #fff;
+    }
+
+    /* Style the modal body and rows */
+    .modal-body {
+        padding: 20px;
+    }
+
+    .row {
+        margin-bottom: 15px;
+    }
+
+    /* Style the labels and data in the modal */
+    p b {
+        font-weight: bold;
+    }
+
+    /* Style the badge for the status */
+    .badge {
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    /* Style the scrollable sections */
+    .scrollable-section {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        width:730px;
+    }
+
+    /* Style the attachment links */
+    .attachment-link {
+        color: #007bff;
+        text-decoration: none;
+        margin-right: 10px;
+    }
+    .table th, .table td {
+                                    border: 1px solid #c9c9c9de;
+                                    padding: 8px;
+                                }
+</style>
+
+        <div class="content-body">
+            <!-- row -->
+			<div class="container-fluid">
+                {% if messages %}
+                <div class="alert-container">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+                <div class="row">
+					<div class="col-lg-12">
+						<div class="card">
+							<div class="card-header">
+								  <h4 class="card-title">All Ticket</h4>
+                                  
+								  <a href="{% url 'create-ticket' %}" class="btn " style="background-color: #FF798A; color: white;">Add ticket</a>
+							 </div>
+                             
+                            <div class="card-body">
+                               
+                                <div class="search-container">
+                            
+                                    <div class="dropdown">
+                                        <button class="dropdown-button" onclick="toggleDropdown()">
+                                            Filter by Status <i class="fa fa-chevron-down"></i>
+                                        </button>
+                                        <div class="dropdown-content" id="statusDropdown">
+                                            <label>
+                                                <input type="checkbox" value="open" name="status_open"> Open
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="inprogress" name="status_inprogress"> In Progress
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="pending" name="status_pending"> Pending
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="closed" name="status_closed"> Closed
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" value="assigned" name="status_assigned"> Assigned
+                                            </label>
+                                        </div>
+                                    </div>
+                            
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                            
+                                    <a href="{% url 'export-to-pdf' %}?export=pdf" download>
+                            
+                                        <svg style="height: 40px; width: 40px;" xmlns="http://www.w3.org/2000/svg" height="1em"
+                                            viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                            
+                                            <style>
+                                                svg {
+                                                    fill: #539c98
+                                                }
+                                            </style>
+                                            <path
+                                                d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56H192v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V448 368c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24H192v48h16zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H304c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H320v96h16zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V432 368z" />
+                                        </svg>
+                            
+                                    </a>&nbsp;
+                            
+                                    <a href="{% url 'export-to-excel' %}" download>
+                            
+                                        <svg style="height: 40px; width: 40px;" xmlns="http://www.w3.org/2000/svg" height="1em"
+                                            viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                            <path
+                                                d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM155.7 250.2L192 302.1l36.3-51.9c7.6-10.9 22.6-13.5 33.4-5.9s13.5 22.6 5.9 33.4L221.3 344l46.4 66.2c7.6 10.9 5 25.8-5.9 33.4s-25.8 5-33.4-5.9L192 385.8l-36.3 51.9c-7.6 10.9-22.6 13.5-33.4 5.9s-13.5-22.6-5.9-33.4L162.7 344l-46.4-66.2c-7.6-10.9-5-25.8 5.9-33.4s25.8-5 33.4 5.9z" />
+                                        </svg>
+                            
+                                        <style>
+                                            svg {
+                                                fill: #1E3050
+                                            }
+                                        </style>
+                            
+                                    </a>
+                            
+                                    <input type="text" id="searchInput" placeholder="Search...">
+                                    <button id="searchButton" class="search-button"><i class="fa fa-search"></i></button>
+                                </div>
+
+                                <div class="table-responsive ticket-table">
+                                <table style="min-width: 845px" class="table">
+                                 <thead>
+                                    <tr>
+                                    
+                                    <th>S.No</th>
+                                    <th>Category</th>
+                                    <th>Subcategory</th>
+                                    <th>TICKET NO</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                        
+                                    </tr>
+                                 </thead>
+
+                                 <tbody >
+                                    {% for ticket in all_tickets %}
+                                    <tr data-status="{{ ticket.status }}" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                        <td> {{ forloop.counter }} </td>
+                                        <td>{{ ticket.category }}</td>
+                                        <td style="max-width: 150px; word-wrap: break-word; overflow-wrap: break-word;">
+                                            {{ ticket.subcategory }}
+                                        </td>                                      
+                                        <td>{{ ticket.id|dynamic_zfill:ticket.store_code }}</td>
+                                        <td>{{ ticket.created }}</td>
+                                        <td>
+                                            <div class="d-flex">
+                                                {% if ticket.status == 'open' %}
+                                                {% if ticket.id %}
+                                                    <a href="#" class="btn btn-danger btn-sm shadow me-1 delete-ticket-btn" data-ticket-id="{{ ticket.id }}">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </a>
+                                                {% endif %}
+                                            {% elif ticket.status == 'inprogress' %}
+                                                <a href="#" class="btn btn-info btn-sm shadow me-1" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                                    <i class="fa fa-hourglass-half"></i> In Progress
+                                                </a>
+                                            {% elif ticket.status == 'pending' %}
+                                                <a href="#" class="btn btn-warning btn-sm shadow me-1" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                                    <i class="fa fa-clock"></i> Pending
+                                                </a>
+                                            {% elif ticket.status == 'closed' %}
+                                                <a href="#" class="btn btn-success btn-sm shadow me-1" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                                    <i class="fa fa-lock"></i> Closed
+                                                </a>
+                                            {% elif ticket.status == 'assigned' %}
+                                                <a href="#" class="btn btn-secondary btn-sm shadow me-1" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                                    <i class="fa fa-user"></i> Assigned
+                                                </a>
+                                            {% elif ticket.status == 'Resolved' %}
+                                                <a href="#" class="btn btn-primary btn-sm shadow me-1" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                                    <i class="fa fa-check-circle"></i> Resolved
+                                                </a>
+                                            {% elif ticket.status == 'reopen' %}
+                                                <a href="#" class="btn  btn-sm shadow me-1" style="font-size: 10px;background-color: #c60e82; color: white;" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                                    <i class="fa fa-unlock"></i> Re-open
+                                                </a>
+                                            {% else %}                                                <a href="#" class="btn btn-secondary btn-sm shadow me-1" data-bs-toggle="modal" data-bs-target="#ticketHistoryModal{{ ticket.id }}">
+                                                    <i class="fa fa-question-circle"></i> {{ ticket.status }}
+                                                </a>
+                                            {% endif %}
+                                            
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this ticket?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn" id="confirmDelete" style="background-color: #FF798A; color: white;">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                 </tbody>
+
+                                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+             
+                    
+
+                    {% for ticket in all_tickets %}
+                    {% if ticket.status != 'open' %}
+                    <div class="modal fade" id="ticketHistoryModal{{ ticket.id }}" tabindex="-1" aria-labelledby="ticketHistoryModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" >
+                            <div class="modal-content">
+                                <!-- Ticket History Details Here -->
+                                <div class="modal-header">
+                                    <div>
+                                        <h5 class="modal-title" style="color: #fff;" id="ticketHistoryModalLabel">Ticket History: {{ ticket.id|dynamic_zfill:ticket.store_code }}</h5>
+                                        <span class="created-by" style="font-size: 12px;color: #c9fffd;">Ticket Created by <b>{{ticket.created_by}}</b></span>
+                                    </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Display Ticket History Details Here -->
+    
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" style="border-collapse: revert;">
+                                            <tbody>
+                                                <tr>
+                                                    <td><b>Ticket Number:</b><br> {{ ticket.id|dynamic_zfill:ticket.store_code }}</td>
+                                                    <td><b>Ticket Created Date:</b><br> {{ ticket.created }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Current Status:</b><br>
+                                                        {% if ticket.status == 'open' %}
+                                                        <span class="badge badge-danger" style="font-size: 10px;">Open</span>
+                                                        {% elif ticket.status == 'inprogress' %}
+                                                        <span class="badge badge-info" style="font-size: 10px;">In Progress</span>
+                                                        {% elif ticket.status == 'pending' %}
+                                                        <span class="badge badge-warning" style="font-size: 10px;">Pending</span>
+                                                        {% elif ticket.status == 'closed' %}
+                                                        <span class="badge badge-success" style="font-size: 10px;">Closed</span>
+                                                        {% elif ticket.status == 'assigned' %}
+                                                        <span class="badge badge-secondary" style="font-size: 10px;">Assigned</span>
+                                                        {% elif ticket.status == 'reopen' %}
+                                                        <span class="badge badge-secondary" style="font-size: 10px;background-color: #c60e82; color: white;">Reopen</span>
+                                                        {% else %}
+                                                        <span class="badge badge-primary" style="font-size: 10px;">{{ ticket.status }}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td><b>Raised by:</b><br> {{ticket.store_code}}</td>
+                                                </tr>
+                                                {% if ticket.status != 'open' and  ticket.status != 'reopen' %}
+                                                <tr>
+                                                    <td><b>Assigned Engineer:</b><br> {{ ticket.assignee }}</td>
+    
+                                                    <td><b>Ticket Assigned Date:</b><br> {{ ticket.assigned_date }}</td>
+                                                                                         
+                                                </tr>
+                                                {% endif %}
+    
+                                                {% if ticket.status == 'reopen' %}
+    
+                                                <tr>
+                                                    <td><b>Resolved Date:</b><br> {{ ticket.resolved_date }}</td>
+    
+                                                    <td><b>Resolver Comments:</b><br> {{ ticket.resolver_comments }}</td>
+                                                </tr>
+                                                {% endif %}
+                                                
+                                                {% if ticket.status != 'open' and ticket.status != 'assigned'  %}
+                                                <tr>
+                                                       
+                                                    <td><b>
+                                                        {% if ticket.status == 'Resolved' %}
+                                                            Resolved Date:
+                                                        {% elif ticket.status == 'closed' %}
+                                                            Ticket Closed Date:
+                                                        {% elif ticket.status == 'reopen' %}
+                                                            Ticket Reopen Date:
+                                                        {% else %}
+                                                            Ticket Closed Date:
+                                                        {% endif %}
+                                                        </b><br>
+                                                        {% if ticket.status == 'Resolved' %}
+                                                            {{ ticket.resolved_date }}
+                                                        {% elif ticket.status == 'closed' %}
+                                                            {{ ticket.closed_date }}
+                                                        {% elif ticket.status == 'reopen' %}
+                                                            {{ ticket.reopen_date }}
+                                                        {% else %}
+                                                            N/A
+                                                        {% endif %}
+                                                    </td>                                                    
+                                                    <td><b>
+                                                        {% if ticket.status == 'Resolved' %}
+                                                            Resolved Comments:
+                                                      
+                                                        {% elif ticket.status == 'reopen' %}
+                                                            Reopen Comments:
+                                                        {% elif ticket.status == 'closed' %}
+                                                            Closure Comments:
+                                                        {% else %}
+                                                             Comments:
+                                                        {% endif %}
+                                                        </b><br>
+                                                        {% if ticket.status == 'Resolved' %}
+                                                            {{ ticket.resolver_comments }}
+                                                       
+                                                        {% elif ticket.status == 'reopen' %}
+                                                            {{ ticket.reopen_comments }}
+                                                       
+                                                        {% else %}
+                                                            {{ticket.closure_comments}}
+                                                        {% endif %}
+                                                    </td>                                             
+                                                </tr>
+                                                {% endif %}
+    
+    
+                                                
+                                                <tr>
+                                                    <td><b>Category:</b><br> {{ ticket.category }}</td>
+                                                    <td><b>Subcategory:</b><br> {{ ticket.subcategory|capfirst }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Short Description:</b><br> {{ ticket.short_description }}</td>
+    
+                                                    <td><b>Approval:</b><br> {{ ticket.approval|default:"None"|title }}</td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td colspan="2" style="white-space: normal;"><b>Detailed Description:</b> {{ ticket.detailed_description }}</td>
+                                                </tr>
+                                               
+                                                
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <b>Attachments:</b>
+                                                        {% if ticket.uploads.exists %}
+                                                        
+                                                        <ul class="scrollable-section">
+                                                            {% for file_upload in ticket.uploads.all %}
+                                                            <li class="text-nowrap-on-desktop">
+                                                                <a href="{{ file_upload.file.url }}" download="{{ file_upload.file.name }}">
+                                                                    <span class="badge badge-success" style="padding: 0rem 0.62rem;"><i class="fa fa-download"></i>&nbsp;Download</span>
+                                                                </a>
+                                                                <a href="{{ file_upload.file.url }}" data-url="{{ file_upload.file.url }}" class="attachment-link">
+                                                                    <span>{{ file_upload.file.name }}</span>
+                                                                </a>
+                                                            </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                        {% else %}
+                                                        <p>No files uploaded.</p>
+                                                        {% endif %}
+                                                    </td>            
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                              
+                                
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                    <div class="pagination">
+                        <div class="pagination-left">
+                            Showing {{ start_index }} to {{ end_index }} of {{ total_items }} entries.
+                        </div>
+                        
+                        <div class="pagination-right">
+                            <ul class="pagination-list">
+                                {% if all_tickets.has_previous %}
+                                    <li><a href="?page=1">&laquo;</a></li>
+                                    <li><a href="?page={{ all_tickets.previous_page_number }}">Previous</a></li>
+                                {% endif %}
+                                
+                                {% for num in all_tickets.paginator.page_range %}
+                                    <li {% if num == all_tickets.number %}class="active"{% endif %}><a href="?page={{ num }}">{{ num }}</a></li>
+                                {% endfor %}
+                                
+                                {% if all_tickets.has_next %}
+                                    <li><a href="?page={{ all_tickets.next_page_number }}">Next</a></li>
+                                    <li><a href="?page={{ all_tickets.paginator.num_pages }}">&raquo;</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const deleteButtons = document.querySelectorAll(".delete-ticket-btn");
+                        const confirmDeleteButton = document.getElementById("confirmDelete");
+
+                        let ticketIdToDelete = null;
+
+                        deleteButtons.forEach((button) => {
+                            button.addEventListener("click", function (event) {
+                                event.preventDefault();
+                                ticketIdToDelete = this.getAttribute("data-ticket-id");
+                                $('#deleteConfirmationModal').modal('show');
+                            });
+                        });
+
+                        confirmDeleteButton.addEventListener("click", function () {
+                            if (ticketIdToDelete !== null) {
+                                window.location.href = `/delete/${ticketIdToDelete}/`;
+                            }
+                        });
+                    });
+
+                    // Add the DataTable initialization script here
+                    $(document).ready(function () {
+                        $('#example').DataTable({
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'copy', 'csv', 'excel', 'pdf', 'print'
+                            ]
+                        });
+                    });
+
+                    </script>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const searchInput = document.getElementById("searchInput");
+                            const tableRows = document.querySelectorAll("tbody tr");
+                        
+                            searchInput.addEventListener("input", function () {
+                                const searchTerm = this.value.trim().toLowerCase();
+                        
+                                tableRows.forEach((row) => {
+                                    const rowData = row.textContent.toLowerCase();
+                                    if (rowData.includes(searchTerm)) {
+                                        row.style.display = "";
+                                    } else {
+                                        row.style.display = "none";
+                                    }
+                                });
+                            });
+                        });
+                        </script>
+    
+                  
+            
+		
+                    <script>
+                        function toggleDropdown() {
+                            const dropdownContent = document.querySelector("#statusDropdown");
+                            const currentDisplay = window.getComputedStyle(dropdownContent).getPropertyValue("display");
+
+                            dropdownContent.style.display = currentDisplay === "block" ? "none" : "block";
+                        }
+                        function filterItems() {
+                            const checkboxes = document.querySelectorAll("#statusDropdown input[type=checkbox]");
+                            const itemList = document.querySelectorAll(".table tbody tr[data-status]");
+
+                            const selectedStatuses = Array.from(checkboxes)
+                                .filter((checkbox) => checkbox.checked)
+                                .map((checkbox) => checkbox.value);
+
+                            itemList.forEach(function (item) {
+                                const itemStatus = item.getAttribute("data-status").toLowerCase();
+                                if (selectedStatuses.length === 0 || selectedStatuses.includes(itemStatus)) {
+                                    item.style.display = "";
+                                } else {
+                                    item.style.display = "none";
+                                }
+                            });
+                        }
+
+                        // Event listeners
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const checkboxes = document.querySelectorAll("#statusDropdown input[type=checkbox]");
+                            checkboxes.forEach(function (checkbox) {
+                                checkbox.addEventListener("change", filterItems);
+                            });
+
+                            // Initial filter
+                            filterItems();
+                        });
+
+                    </script>
+
+                  
+
+                </div>
+            </div>
+        </div>
+    
+{% endblock %}

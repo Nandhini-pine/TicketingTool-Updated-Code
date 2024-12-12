@@ -25,13 +25,13 @@ class StoreAdminForm(forms.ModelForm):
 
     def clean_user(self):
         user = self.cleaned_data['user']
-        store_person_group = Group.objects.get(name='StorePerson')
+        store_person_group = Group.objects.get(name='CFAPerson')
         
         if user.groups.filter(pk=store_person_group.pk).exists():
             # Check if the user already has a store
             existing_store = Store.objects.filter(user=user).exclude(pk=self.instance.pk).first()
             if existing_store:
-                raise forms.ValidationError("StorePersons can have only one store.")
+                raise forms.ValidationError("CFAPersons can have only one store.")
         return user
 
 class StoreAdmin(admin.ModelAdmin):

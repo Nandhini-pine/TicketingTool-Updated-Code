@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User,Group
 from django.core.paginator import Paginator
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.cache import cache_control
 from user_module.decorators import allowed_users
 from django.db.models import Q
@@ -13,6 +13,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.db import IntegrityError
 import pandas as pd
+from django.http import HttpResponseNotFound
 
 from .forms import *
 from tickets.models import *
@@ -414,7 +415,7 @@ def admin_export_to_pdf(request):
 
         # Export to PDF
 
-        template_path = 'StorePerson/pdf_template.html'
+        template_path = 'CFAPerson/pdf_template.html'
 
         all_tickets = Item.objects.all().order_by('-created')
 
@@ -510,32 +511,67 @@ def admin_get_ticket_details(request, ticket_id):
         return JsonResponse({'error': 'Ticket not found'}, status=404)
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required()
+@allowed_users(allowed_roles=['Admin'])
+def Non_Ad_user_creation(request, user_id=None):
+    if request.method == 'POST':
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return HttpResponseNotFound("User not found.") 
+            form = CustomUserChangeForm(request.POST, instance=user)
+        else:
+            form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save() 
+            return redirect('user_list')
+        else:
+            return render(request, 'Admin/user_create.html', {'form': form, 'user_id': user_id})  # Remove 'user' from the context 
+    else:
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return HttpResponseNotFound("User not found.") 
+            form = CustomUserChangeForm(instance=user)
+        else:
+            form = CustomUserCreationForm()
+        return render(request, 'Admin/user_create.html', {'form': form, 'user_id': user_id})
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required()
 @allowed_users(allowed_roles=['Admin'])
-def user_creation(request):
+def Ad_user_creation(request, user_id=None):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        if user_id: 
+            user = User.objects.get(id=user_id)
+            form = AdUserCreationForm(request.POST, instance=user)
+        else:
+            form = AdUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            group = form.cleaned_data['groups']
-            
-            # Set the user's group based on the selected group in the form
-            user.groups.set([group])
-
-            return redirect('user_list')  # Replace with your success URL
+            user = form.save() 
+            return redirect('user_list') 
+        else:
+            user = None 
     else:
-        form = CustomUserCreationForm()
+        if user_id:
+            user = User.objects.get(id=user_id)
+            form = AdUserCreationForm(instance=user)
+        else:
+            form = AdUserCreationForm()
+            user = None 
 
-    return render(request, 'Admin/user_create.html', {'form': form})
+    return render(request, 'Admin/ad_user_create.html', {'form': form, 'user_id': user_id, 'user': user})
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required()
 @allowed_users(allowed_roles=['Admin'])
 def user_list(request):
-    users = User.objects.all()  # Query all user objects
+    users = User.objects.all().select_related('usertype') 
     storecode=Store.objects.all()
     context = {
         'users': users,  # Pass the user data to the template
@@ -560,14 +596,14 @@ def add_storecode(request):
             # Find the user by the selected username
             selected_user = User.objects.get(username=selected_username)
 
-            # Check if the user is in the "StorePerson" group
-            store_person_group = Group.objects.get(name='StorePerson')
+            # Check if the user is in the "CFAPerson" group
+            store_person_group = Group.objects.get(name='CFAPerson')
 
             if selected_user.groups.filter(pk=store_person_group.pk).exists():
-                # StorePerson can have only one store
+                # CFAPerson can have only one store
                 existing_store = Store.objects.filter(user=selected_user).first()
                 if existing_store:
-                    form.add_error(None, "StorePersons can have only one store.")
+                    form.add_error(None, "CFAPersons can have only one store.")
                 else:
                     # Create a new Store object and save it
                     store = Store(store_code=store_code, user=selected_user)
@@ -575,14 +611,14 @@ def add_storecode(request):
 
                     return redirect('storecode_list')  # Redirect to a success page
             else:
-                form.add_error(None, "The selected user is not in the 'StorePerson' group.")
+                form.add_error(None, "The selected user is not in the 'CFAPerson' group.")
         else:
             print(form.errors)  # Print the validation errors to the console
     else:
         form = AddStoreCodeForm()
 
     # Fetch a list of usernames
-    usernames = User.objects.filter(groups__name='StorePerson').values_list('username', flat=True)
+    usernames = User.objects.filter(groups__name='CFAPerson').values_list('username', flat=True)
 
     return render(request, 'Admin/add_storecode.html', {'form': form, 'usernames': usernames})
 
@@ -600,11 +636,18 @@ def storecode_list(request):
 
 def user_delete(request, user_id):
     try:
-        user = User.objects.get(id=user_id)
-        user.delete()
+        # Retrieve the user using the provided user_id
+        user = get_object_or_404(User, id=user_id)
+        
+        # Deactivate the user by setting is_active to False
+        user.is_active = False
+        user.save()  # Save the change to the database
+        
     except User.DoesNotExist:
         pass  # Handle the case where the user does not exist
-    return redirect('user_list')  # Redirect back to the user list page
+    
+    # Redirect to the user list page or any other page as required
+    return redirect('user_list')
 
 
 @login_required

@@ -825,12 +825,12 @@
                                                 <td>{{ am.get_functionally_display }}</td>
                                                 <td>{{ am.approval|capfirst }}</td>
                                                 <td>
-                                                    <a class="edit-approval" title="Edit"
+                                                   <!--<a class="edit-approval" title="Edit"
                                                         data-technical="{{ am.technically }}"
                                                         data-functional="{{ am.functionally }}"
                                                         data-approval="{{ am.approval }}"
                                                         data-approval-id="{{ am.id }}"><i style="color: #61b9b5;"
-                                                            class="material-icons">&#xE254;</i></a>
+                                                            class="material-icons">&#xE254;</i></a>-->
                                                     <a href="{% url 'delete_approval_matrix' am.id %}"
                                                         class="btn btn-danger shadow btn-xs sharp approval_delete-btn"
                                                         data-approval-id="{{ am.id }}">

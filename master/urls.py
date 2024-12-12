@@ -34,7 +34,11 @@ urlpatterns = [
     
     #User creation
 
-    path('usercreate/', views.user_creation, name='user_creation'),
+    path('non-ad-user-create/', views.Non_Ad_user_creation, name='create_non_ad_user'),
+    path('non-ad-user-edit/<int:user_id>/', views.Non_Ad_user_creation, name='edit_non_ad_user'),
+    path('ad-user-create/', views.Ad_user_creation, name='create_ad_user'), 
+    path('ad-user-edit/<int:user_id>/', views.Ad_user_creation, name='edit_ad_user'), 
+
     path('userlist/', views.user_list, name='user_list'),
     path('addstorecode/', views.add_storecode, name='add_storecode'),
     path('storecodelist/', views.storecode_list, name='storecode_list'),

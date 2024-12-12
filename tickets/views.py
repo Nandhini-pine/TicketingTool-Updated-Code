@@ -31,7 +31,7 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required()
-@allowed_users(allowed_roles=['StorePerson'])
+@allowed_users(allowed_roles=['CFAPerson'])
 def index(request):
     authenticated_user = request.user  # Get the authenticated user
     numbers = list(range(1, 101))
@@ -91,7 +91,7 @@ def index(request):
         'open_percentage': open_percentage,
         'numbers': numbers,
     }
-    return render(request, 'StorePerson/base.html', context)
+    return render(request, 'CFAPerson/base.html', context)
 
 from django.shortcuts import render, redirect, reverse
 from .models import Category, Subcategory, ApprovalMatrix, Item, User
@@ -103,7 +103,7 @@ from django.db import transaction
 MAX_FILE_SIZE_MB = 2  # Maximum file size in megabytes
 
 @login_required
-@allowed_users(allowed_roles=['StorePerson'])
+@allowed_users(allowed_roles=['CFAPerson'])
 def create_ticket(request):
     categories = Category.objects.all()
     subcategories = Subcategory.objects.all()
@@ -194,7 +194,7 @@ def create_ticket(request):
                         )
                         file_upload.save()
 
-                    return redirect(reverse('storeperson_alltickets') + '?success=True')
+                    return redirect(reverse('CFAPerson_alltickets') + '?success=True')
 
                 except (ValueError, Category.DoesNotExist, Subcategory.DoesNotExist) as e:
                     errors.append('Invalid category or subcategory selected.')
@@ -205,11 +205,11 @@ def create_ticket(request):
 
         context['errors'] = errors
 
-    return render(request, 'StorePerson/create-ticket.html', context)
+    return render(request, 'CFAPerson/create-ticket.html', context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required()
-@allowed_users(allowed_roles=['StorePerson'])
+@allowed_users(allowed_roles=['CFAPerson'])
 def all_ticket(request):
     authenticated_user = request.user  # Get the authenticated user
     categories = Category.objects.all() 
@@ -296,7 +296,7 @@ def all_ticket(request):
     )
 
       
-    return render(request, 'StorePerson/Storeperson_alltickets.html', {
+    return render(request, 'CFAPerson/CFAPerson_alltickets.html', {
         'all_tickets': all_tickets,
         'categories':categories,
         'subcategories':subcategories,
@@ -323,8 +323,8 @@ def test(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required()
-@allowed_users(allowed_roles=['StorePerson'])
-def StorePerson_Tableview(request):
+@allowed_users(allowed_roles=['CFAPerson'])
+def CFAPerson_Tableview(request):
     # Get the authenticated user
     authenticated_user = request.user
 
@@ -350,7 +350,7 @@ def StorePerson_Tableview(request):
         'total_items': paginator.count,
     }
     
-    return render(request, 'StorePerson/sptable_view.html', context)
+    return render(request, 'CFAPerson/sptable_view.html', context)
 
 
 def export_to_pdf(request):
@@ -361,7 +361,7 @@ def export_to_pdf(request):
 
     if export_type == 'pdf':
         # Export to PDF
-        template_path = 'StorePerson/pdf_template.html'
+        template_path = 'CFAPerson/pdf_template.html'
         all_tickets = Item.objects.filter(created_by=authenticated_user).order_by('-created')
         context = {'all_tickets': all_tickets}
         response = HttpResponse(content_type='application/pdf')
@@ -409,7 +409,7 @@ def delete(request, id):
     all_tickets = Item.objects.get(id=id)
     all_tickets.delete()
     messages.success(request, 'Ticket deleted successfully!')
-    return HttpResponseRedirect(reverse('Storeperson_Tables'))
+    return HttpResponseRedirect(reverse('CFAPerson_Tables'))
 
 
 def get_ticket_details(request, ticket_id):
@@ -435,7 +435,7 @@ MAX_TOTAL_FILE_SIZE_MB = 2  # Maximum total file size in megabytes
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
-@allowed_users(allowed_roles=['StorePerson'])
+@allowed_users(allowed_roles=['CFAPerson'])
 def edit_ticket(request, ticket_id):
     ticket = get_object_or_404(Item, id=ticket_id)
 
@@ -471,12 +471,12 @@ def edit_ticket(request, ticket_id):
 
         if total_file_size_bytes > MAX_TOTAL_FILE_SIZE_MB * 1024 * 1024:
             messages.error(request, f'Total file size exceeds {MAX_TOTAL_FILE_SIZE_MB} MB. Please reduce the file sizes or delete previous files.')
-            return redirect('/Storepersontickets/')  # Redirect to the 'Storeperson_alltickets' page
+            return redirect('/CFAPersontickets/')  # Redirect to the 'CFAPerson_alltickets' page
 
         for uploaded_file in uploaded_files:
             if uploaded_file.size > MAX_FILE_SIZE_MB * 1024 * 1024:  # Check if the file size exceeds 2 MB
                 messages.error(request, f'File "{uploaded_file.name}" exceeds the maximum size of {MAX_FILE_SIZE_MB} MB.')
-                return redirect('/Storepersontickets/')  # Redirect to the 'Storeperson_alltickets' page
+                return redirect('/CFAPersontickets/')  # Redirect to the 'CFAPerson_alltickets' page
 
             try:
                 # Create a new FileUpload instance and associate it with the ticket
@@ -494,13 +494,13 @@ def edit_ticket(request, ticket_id):
         ticket.save()
         messages.success(request, 'Ticket updated successfully.')
 
-        return redirect('/Storepersontickets/')
+        return redirect('/CFAPersontickets/')
 
     # Handle GET request or other cases
     categories = Category.objects.all()
     subcategories = Subcategory.objects.all()
 
-    return render(request, 'StorePerson/Storeperson_alltickets.html', {
+    return render(request, 'CFAPerson/CFAPerson_alltickets.html', {
         'ticket': ticket, 
         'categories': categories,
         'subcategories': subcategories,
@@ -571,9 +571,9 @@ def change_ticket_status(request, ticket_id):
         
         # Save the ticket with updated status and comments
         ticket.save(user=request.user)
-        return redirect('storeperson_alltickets')  # Adjust the redirect as needed
+        return redirect('CFAPerson_alltickets')  # Adjust the redirect as needed
 
-    return redirect('storeperson_alltickets')  # Adjust the redirect as needed
+    return redirect('CFAPerson_alltickets')  # Adjust the redirect as needed
 
 
 
@@ -612,10 +612,10 @@ def submit_clarification_view(request, ticket_id):
 
 
                 # Redirect or render a success message, or back to the item detail page
-                return redirect('storeperson_alltickets')  # No ticket_id argument if not needed
+                return redirect('CFAPerson_alltickets')  # No ticket_id argument if not needed
 
     # Render the ticket detail template with fetched data
-    return render(request, 'StorePerson/Storeperson_alltickets.html', {
+    return render(request, 'CFAPerson/CFAPerson_alltickets.html', {
         'item': item,
     })
 

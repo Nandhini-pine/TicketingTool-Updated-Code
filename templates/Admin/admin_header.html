@@ -243,11 +243,13 @@
 					<li>
 						<a class="has-arrow ai-icon" href="javascript:void(0);" aria-expanded="false">
 							<i class="fa fa-user"></i>
-							<span class="nav-text">Users<span class="badge badge-xs badge-danger ms-2"></span></span>
+							<span class="nav-text">User Management<span class="badge badge-xs badge-danger ms-2"></span></span>
 						</a>
 						<ul aria-expanded="false">
 							<!-- Submenu items go here -->
-							<li><a href="{% url 'user_creation' %}">Add Users</a></li>
+							<li><a href="{% url 'create_non_ad_user' %}">Add Non-AD Users</a></li>
+							<li><a href="{% url 'create_ad_user' %}">Add AD Users</a></li>
+
 							<li><a href="{% url 'user_list' %}">User List</a></li>
 							<!-- Add more submenu items as needed -->
 						</ul>

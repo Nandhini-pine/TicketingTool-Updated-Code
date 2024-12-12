@@ -8,6 +8,10 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 
 class Store(models.Model):
     store_code = models.CharField(max_length=10)
@@ -20,14 +24,14 @@ class Store(models.Model):
             return self.store_code
 
     def save(self, *args, **kwargs):
-        # Check if the user is in the "StorePerson" group
-        store_person_group = Group.objects.get(name='StorePerson')
+        # Check if the user is in the "CFAPerson" group
+        store_person_group = Group.objects.get(name='CFAPerson')
         
         if self.user.groups.filter(pk=store_person_group.pk).exists():
-            # StorePerson can have only one store
+            # CFAPerson can have only one store
             existing_store = Store.objects.filter(user=self.user).exclude(pk=self.pk).first()
             if existing_store:
-                raise ValidationError("StorePersons can have only one store.")
+                raise ValidationError("CFAPersons can have only one store.")
         
         super().save(*args, **kwargs)
 
@@ -104,7 +108,8 @@ class ApprovalMatrix(models.Model):
 
     functionally = models.CharField(max_length=7, choices=FUNCTIONALITY_CHOICES, default='')
     technically = models.CharField(max_length=7, choices=TECHNICALITY_CHOICES, default='')
-    
+    is_active = models.BooleanField(default=True, help_text="Indicates if the approval matrix is active")
+
     APPROVAL_CHOICES = [
         ('auto', 'Auto'),
         ('manual', 'Manual'),
@@ -284,11 +289,15 @@ class SeekAttachment(models.Model):
 
 
 
+# Email configuration
+from_email = "wwdsupport_noreply@titan.co.in"  # Use Titan server address
+smtp_server = 'titan-co-in.mail.protection.outlook.com'
+smtp_port = 25 
+
 @receiver(post_save, sender=Item)
 def send_email_on_ticket_creation(sender, instance, created, **kwargs):
     if created and instance.created_by:
         subject = 'New Ticket Created'
-        from_email = 'nandhinipinesphere@gmail.com'
 
         # Get the "Manager" group
         try:
@@ -298,6 +307,9 @@ def send_email_on_ticket_creation(sender, instance, created, **kwargs):
 
         # Create a recipient list with the created_by user's email
         recipient_list = [instance.created_by.email]
+
+        # Create a CC list (e.g., add support team)
+        cc_list = ["Nandhini.V@titan.co.in"] 
 
         if manager_group:
             # Get all users in the "Manager" group
@@ -323,10 +335,24 @@ def send_email_on_ticket_creation(sender, instance, created, **kwargs):
         )
 
         # Create a plain text version of the email
-        plain_message = strip_tags(html_message)
+        plain_message = strip_tags(html_message).encode('utf-8') 
 
-        # Send the email
-        send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+        # Create the email message object
+        msg = MIMEMultipart()
+        msg['From'] = from_email
+        msg['To'] = ", ".join(recipient_list)  # Join recipients with commas
+        msg['Subject'] = subject
+        msg['Cc'] = ", ".join(cc_list)  # Join CC recipients with commas
+        msg.attach(MIMEText(html_message, 'html'))
+
+        # Send the email using Titan server
+        try:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()  # Start TLS for encryption
+                server.sendmail(from_email, recipient_list + cc_list, msg.as_string())  # Send to recipients and CCs
+                print("Ticket Creation Email Sent Successfully")
+        except Exception as e:
+            print(f"Failed to send Ticket Creation Email: {e}")
 
 from django.contrib.auth.models import User, Group
 from django.template.loader import render_to_string
@@ -348,16 +374,23 @@ def send_email_on_assignment(sender, instance, **kwargs):
             f'Comments: {instance.resolver_comments}\n'
             f'Assigned Date: {instance.assigned_date}\n'
         )
-        from_email = 'nandhinipinesphere@gmail.com'
-        recipient_list = [instance.assignee.email]  # Send email to the assigned engineer
+
+        # Create a recipient list with the assigned engineer
+        recipient_list = [instance.assignee.email] 
+
+        # Create a CC list (e.g., add support team)
+        cc_list = ["Nandhini.V@titan.co.in"] 
 
         # Get the "Manager" group
-        manager_group = Group.objects.get(name='Manager')
+        try:
+            manager_group = Group.objects.get(name='Manager')
+        except Group.DoesNotExist:
+            manager_group = None
 
         if manager_group:
             # Get all users in the "Manager" group
             managers = manager_group.user_set.all()
-
+            
             # Add the email addresses of all managers to the recipient list
             recipient_list.extend([manager.email for manager in managers])
 
@@ -367,17 +400,24 @@ def send_email_on_assignment(sender, instance, **kwargs):
         # Render the HTML content from the template
         html_message = render_to_string('ticket_assignment_email.html', {'instance': instance})
 
-        # Create an EmailMessage object for the HTML content
-        email = EmailMessage(subject, strip_tags(message), from_email, recipient_list)
-        email.content_subtype = 'html'  # Set the email content type to HTML
-        email.body = html_message  # Set the HTML content as the email body
+        # Create the email message object
+        msg = MIMEMultipart()
+        msg['From'] = from_email
+        msg['To'] = ", ".join(recipient_list)  # Join recipients with commas
+        msg['Subject'] = subject
+        msg['Cc'] = ", ".join(cc_list)  # Join CC recipients with commas
+        msg.attach(MIMEText(html_message, 'html'))
 
-        # Send the email
-        email.send()
-
-
-
-
+        # Send the email using Titan server
+        try:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()  # Start TLS for encryption
+                server.sendmail(from_email, recipient_list + cc_list, msg.as_string())
+                print("Ticket Assignment Email Sent Successfully")
+        except Exception as e:
+            print(f"Failed to send Ticket Assignment Email: {e}")
+            print(f"Error details: {e}") 
+            
 @receiver(post_save, sender=Item)
 def send_email_on_status_change(sender, instance, **kwargs):
     if instance.status in ['inprogress', 'pending', 'closed','Resolved']:
@@ -391,13 +431,14 @@ def send_email_on_status_change(sender, instance, **kwargs):
             f'Comments: {instance.resolver_comments}\n'
             f'Created By: {instance.created_by.username}\n'
             f'Change Date: {instance.status_changed_date}\n'
-
         )
-        from_email = 'nandhinipinesphere@gmail.com'
-        recipient_list = [instance.created_by.email]  # Send email to the created_by user
+
+        # Create a recipient list
+        recipient_list = [instance.created_by.email] 
 
         # Add the email address of the assignee (engineer) to the recipient list
         recipient_list.append(instance.assignee.email)
+        cc_list = ["Nandhini.V@titan.co.in"] 
 
         # If there is a status_changed_by_manager, add their email to the recipient list
         if instance.status_changed_by_manager:
@@ -406,18 +447,30 @@ def send_email_on_status_change(sender, instance, **kwargs):
         # Render the HTML content from the template
         html_message = render_to_string('ticket_status_change_email.html', {'instance': instance})
 
-        # Create an EmailMessage object for the HTML content
-        email = EmailMessage(subject, strip_tags(message), from_email, recipient_list)
-        email.content_subtype = 'html'  # Set the email content type to HTML
-        email.body = html_message  # Set the HTML content as the email body
+        # Create the email message object
+        msg = MIMEMultipart()
+        msg['From'] = from_email
+        msg['To'] = ", ".join(recipient_list)  # Join recipients with commas
+        msg['Subject'] = subject
+        msg['Cc'] = ", ".join(cc_list)  # Join CC recipients with commas
+        msg.attach(MIMEText(html_message, 'html'))
 
-        # Send the email
-        email.send()
+        # Send the email using Titan server
+        try:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()  # Start TLS for encryption
+                server.sendmail(from_email, recipient_list, msg.as_string())
+                print("Ticket Status Change Email Sent Successfully")
+        except Exception as e:
+            print(f"Failed to send Ticket Status Change Email: {e}")
+            print(f"Error details: {e}") 
+
 
 @receiver(post_save, sender=SeekClarificationHistory)
 def send_email_on_clarification_change(sender, instance, created, **kwargs):
     subject = ''
     recipient_list = [instance.item.created_by.email]  # Send to the person who created the item
+    cc_list = ["Nandhini.V@titan.co.in"] 
 
     # Debugging
     print(f'Created by: {instance.created_by.username}')
@@ -449,17 +502,23 @@ def send_email_on_clarification_change(sender, instance, created, **kwargs):
         )
 
     if subject:
-        from_email = 'nandhinipinesphere@gmail.com'
-
         # Render the HTML content from a template (optional)
         html_message = render_to_string('seek_clarification_email.html', {'instance': instance})
 
-        # Create an EmailMessage object for the HTML content
-        email = EmailMessage(subject, strip_tags(message), from_email, recipient_list)
-        email.content_subtype = 'html'  # Set the email content type to HTML
-        email.body = html_message  # Set the HTML content as the email body
+        # Create the email message object
+        msg = MIMEMultipart()
+        msg['From'] = from_email
+        msg['To'] = ", ".join(recipient_list)  # Join recipients with commas
+        msg['Subject'] = subject
+        msg['Cc'] = ", ".join(cc_list)  # Join CC recipients with commas
+        msg.attach(MIMEText(html_message, 'html'))
 
-        # Send the email
-        email.send()
-
-
+        # Send the email using Titan server
+        try:
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()  # Start TLS for encryption
+                server.sendmail(from_email, recipient_list, msg.as_string())
+                print("Clarification Email Sent Successfully")
+        except Exception as e:
+            print(f"Failed to send Clarification Email: {e}")
+            print(f"Error details: {e}")

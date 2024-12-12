@@ -23,7 +23,7 @@ class AddStoreCodeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].choices = [(user.username, user.username) for user in User.objects.filter(groups__name='StorePerson')]
+        self.fields['username'].choices = [(user.username, user.username) for user in User.objects.filter(groups__name='CFAPerson')]
 
     def clean(self):
         cleaned_data = super().clean()

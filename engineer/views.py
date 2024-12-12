@@ -323,7 +323,7 @@ def engineer_export_to_pdf(request):
 
     if export_type == 'pdf':
         # Export to PDF
-        template_path = 'StorePerson/pdf_template.html'
+        template_path = 'CFAPerson/pdf_template.html'
         all_tickets = Item.objects.filter(assignee=current_user).order_by('-created')
         context = {'all_tickets': all_tickets}
         response = HttpResponse(content_type='application/pdf')

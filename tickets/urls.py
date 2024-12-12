@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path('base/',views.index,name="base"),
     path('create_ticket/',views.create_ticket,name="create-ticket"),
-    path('Storepersontickets/',views.all_ticket,name="storeperson_alltickets"),
+    path('CFAPersontickets/',views.all_ticket,name="CFAPerson_alltickets"),
     path('login_new',views.login_new,name='login_new'),
     path('widget-basic/',views.test,name="widget-basic"),
     
@@ -12,7 +12,7 @@ urlpatterns = [
    
     
     #tables
-    path('Storeperson|Table/', views.StorePerson_Tableview, name='Storeperson_Tables'),
+    path('CFAPerson|Table/', views.CFAPerson_Tableview, name='CFAPerson_Tables'),
     path('delete/<int:id>/', views.delete, name='delete-ticket'),
     path('get-ticket-details/<int:ticket_id>/', views.get_ticket_details, name='get-ticket-details'),
     path('edit_ticket/<int:ticket_id>/', views.edit_ticket, name="edit-ticket"),
