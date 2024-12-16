@@ -634,6 +634,7 @@ function populateDropdowns() {
     dropdowns.forEach((dropdownId, colIndex) => {
         const dropdown = document.getElementById(dropdownId);
         const uniqueValues = new Set();
+        dropdown.innerHTML = '<option value="">All</option>';
 
         rows.forEach(row => {
             const cell = row.cells[colIndex];
@@ -722,6 +723,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     const currentDisplay = window.getComputedStyle(dropdownContent).getPropertyValue("display");
 
                                     dropdownContent.style.display = currentDisplay === "block" ? "none" : "block";
+                                
                                 }
                                 function filterItems() {
                                 const checkboxes = document.querySelectorAll("#statusDropdown input[type=checkbox]");
@@ -752,6 +754,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 checkboxes.forEach(function (checkbox) {
                                     checkbox.addEventListener("change", filterItems);
                                 });
+                                
 
                                 // Initial filter
                                 filterItems();

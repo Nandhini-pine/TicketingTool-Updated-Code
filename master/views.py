@@ -108,20 +108,23 @@ def create_approval_matrix(request):
     if request.method == 'POST':
         form = ApprovalMatrixForm(request.POST)
         if form.is_valid():
-            try:
-                form.save()  # Save the form data to the database
-                # You can add a success message or redirect to another page here
-                return redirect('create_page')  # Replace 'create_page' with the name of your success view
-            except IntegrityError:
-                form.add_error(None, 'The combination of functionality, technicality, and approval already exists.')
+            cleaned_data = form.cleaned_data
+            if ApprovalMatrix.objects.filter(functionally=cleaned_data['functionally'], technically=cleaned_data['technically']).exists():
+                form.add_error(None, 'An approval matrix with this combination of functionality and technicality already exists.') 
+            else:
+                instance = form.save(commit=False)
+                instance.save()
+                return redirect('create_page') 
         else:
-            # Print form errors to the console if form is not valid
             print("Form errors:", form.errors.as_json())
     else:
         form = ApprovalMatrixForm()
 
-    return render(request, 'Admin/createpage.html', {'form': form})
+    # Get existing records
+    existing_records = ApprovalMatrix.objects.all() 
+    print("exiting:",existing_records)
 
+    return render(request, 'Admin/createpage.html', {'form': form, 'existing_records': existing_records})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required()

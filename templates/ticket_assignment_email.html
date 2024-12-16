@@ -57,7 +57,7 @@
         <p class="light-center"><strong>Ticket ID:</strong>{{ instance.id|dynamic_zfill:instance.store_code }}</p>
         <p class="light-center"><strong>Created By:</strong> {{ instance.created_by.username|capfirst }}</p>
         <p class="light-center"><strong>Assigned To:</strong> {{ instance.assignee.username|capfirst }}</p>
-        <p class="light-center"><strong>Store Code:</strong> {{ instance.store_code }}</p>
+        <p class="light-center"><strong>CFA Code:</strong> {{ instance.store_code }}</p>
         <p class="light-center"><strong>Status:</strong> 
             {% if instance.status == 'assigned' %}
             <b style="color: rgb(5, 78, 130);">{{ instance.status|capfirst }}</b>
@@ -73,8 +73,10 @@
         </p>
         <p class="light-center"><strong>Category:</strong> {{ instance.category.name }}</p>
         <p class="light-center"><strong>Subcategory:</strong> {{ instance.subcategory.name }}</p>
-        <p class="light-center"><strong>Description:</strong> {{ instance.description|capfirst }}</p>
+        <p class="light-center"><strong>Description:</strong> {{ instance.short_description|capfirst }}</p>
         <p class="light-center"><strong>Assigned Date:</strong> {{ instance.assigned_date }}</p>
+        <p>Visit Website: <a href="https://wwdsupport.titan.in/">https://wwdsupport.titan.in/</a></p>
+
         <div id="footer">
             <p>Copyright � Designed &amp; Developed by <a href="http://Pinesphere.com/" target="_blank">Pinesphere</a> 2023</p>
         </div>

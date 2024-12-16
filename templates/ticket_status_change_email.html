@@ -79,14 +79,14 @@
                 <b>{{ instance.status }}</b>
             {% endif %}
         </p>
-                <p class="light-center" ><strong>Store Code:</strong> {{ instance.store_code }}</p>
+                <p class="light-center" ><strong>CFA Code:</strong> {{ instance.store_code }}</p>
         <p class="light-center" ><strong>Created Date:</strong> {{ instance.created_by.username|capfirst }}</p>
         <p class="light-center" ><strong>Change Date:</strong> {{ instance.status_changed_date }}</p>
         <p class="light-center"><strong>Category:</strong> {{ instance.category }}</p>
         <p class="light-center" ><strong>Subcategory:</strong> {{ instance.subcategory }}</p>
-        <p class="light-center" ><strong>Description:</strong>{{ instance.description|capfirst }}</p>
+        <p class="light-center" ><strong>Description:</strong>{{ instance.short_description|capfirst }}</p>
         <p class="light-center" ><strong>Comments:</strong> {{ instance.comments|capfirst }}</p>
-
+        <p>Visit Website: <a href="https://wwdsupport.titan.in/">https://wwdsupport.titan.in/</a></p>
         <div id="footer">
             <p>Copyright � Designed &amp; Developed by <a href="http://Pinesphere.com/" target="_blank">Pinesphere</a> 2023</p>
         </div>

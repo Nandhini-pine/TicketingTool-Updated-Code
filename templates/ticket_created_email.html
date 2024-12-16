@@ -70,13 +70,13 @@
             {% endif %}
         </p>
         
-        <p class="light-center" ><strong>Store Code:</strong>{{ store_code }}</p>
+        <p class="light-center" ><strong>CFA Code:</strong>{{ store_code }}</p>
         <p class="light-center" ><strong>Created By:</strong>{{ created_by|capfirst }}</p>
         <p class="light-center" ><strong>Created Date:</strong>{{ created_date }}</p>
         <p class="light-center"><strong>Category:</strong>{{ category }}</p>
         <p class="light-center" ><strong>Subcategory:</strong>{{ subcategory }}</p>
-        <p class="light-center" ><strong>Description:</strong>{{ description|capfirst }}</p>
-
+        <p class="light-center" ><strong>Description:</strong>{{ short_description|capfirst }}</p>
+        <p>Visit Website: <a href="{{ website_link }}">{{ website_link }}</a></p>
         <div id="footer">
             <p>Copyright � Designed &amp; Developed by <a href="http://Pinesphere.com/" target="_blank">Pinesphere</a> 2023</p>
         </div>

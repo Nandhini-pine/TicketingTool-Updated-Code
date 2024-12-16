@@ -46,7 +46,7 @@
             <h1>{{ instance.status_check|capfirst }} on Ticket {{ instance.item.id|dynamic_zfill:instance.item.store_code }}</h1>
         </div>
         <p class="light-center"><strong>Ticket ID:</strong> {{ instance.item.id|dynamic_zfill:instance.item.store_code }}</p>
-        <p class="light-center"><strong>Store Code:</strong> {{ instance.item.store_code }}</p>
+        <p class="light-center"><strong>CFA Code:</strong> {{ instance.item.store_code }}</p>
         <p class="light-center"><strong>Category:</strong> {{ instance.item.category.name }}</p>
     
         {% if instance.status_check == 'clarified' and instance.clarified_comment %}
@@ -58,7 +58,8 @@
         {% endif %}
     
         <p class="light-center"><strong>Date:</strong> {{ instance.created_at|date:"M d, Y H:i" }}</p>
-    
+        <p>Visit Website: <a href="https://wwdsupport.titan.in/">https://wwdsupport.titan.in/</a></p>
+
         <div id="footer">
             <p>Copyright &copy; Designed & Developed by <a href="http://Pinesphere.com/" target="_blank">Pinesphere</a> 2023</p>
         </div>

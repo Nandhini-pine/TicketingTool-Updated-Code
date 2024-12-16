@@ -331,6 +331,8 @@ def send_email_on_ticket_creation(sender, instance, created, **kwargs):
                 'detailed_description': instance.detailed_description,
                 'category': instance.category,
                 'subcategory': instance.subcategory,
+                'website_link': 'https://wwdsupport.titan.in/',  # Add website link as a dictionary item
+
             }
         )
 
@@ -363,16 +365,20 @@ from django.utils.html import strip_tags
 def send_email_on_assignment(sender, instance, **kwargs):
     if instance.assignee and instance.status == 'assigned':
         subject = 'Ticket Assignment'
+        created_by_user = instance.created_by if instance.created_by else None
+        created_by_username = created_by_user.username if created_by_user else "Unknown User"        
         message = (
             f'Ticket ID: {instance.id}\n'
-            f'Created By: {instance.created_by.username}\n'
+            f'Created By: {created_by_username}\n'
             f'Assigned To: {instance.assignee.username}\n'
-            f'Store Code: {instance.store_code}\n'
+            f'CFA Code: {instance.store_code}\n'
             f'Changed To: {instance.status}\n'
             f'Category: {instance.category.name}\n'
             f'Subcategory: {instance.subcategory.name}\n'
             f'Comments: {instance.resolver_comments}\n'
             f'Assigned Date: {instance.assigned_date}\n'
+            f'\n'  # Add an empty line for better formatting
+            f'Visit Website: https://wwdsupport.titan.in/'
         )
 
         # Create a recipient list with the assigned engineer
@@ -395,8 +401,8 @@ def send_email_on_assignment(sender, instance, **kwargs):
             recipient_list.extend([manager.email for manager in managers])
 
         # Add the email address of the created_by user to the recipient list
-        recipient_list.append(instance.created_by.email)
-
+        if created_by_user:
+            recipient_list.append(created_by_user.email)
         # Render the HTML content from the template
         html_message = render_to_string('ticket_assignment_email.html', {'instance': instance})
 
@@ -425,12 +431,14 @@ def send_email_on_status_change(sender, instance, **kwargs):
         message = (
             f'Ticket ID: {instance.id}\n'
             f'Changed To: {instance.status}\n'
-            f'Store Code: {instance.store_code}\n'
+            f'CFA Code: {instance.store_code}\n'
             f'Category: {instance.category.name}\n'
             f'Subcategory: {instance.subcategory.name}\n'
             f'Comments: {instance.resolver_comments}\n'
             f'Created By: {instance.created_by.username}\n'
             f'Change Date: {instance.status_changed_date}\n'
+            f'Visit Website: https://wwdsupport.titan.in/'
+
         )
 
         # Create a recipient list
@@ -483,22 +491,26 @@ def send_email_on_clarification_change(sender, instance, created, **kwargs):
         subject = 'New Clarification Requested'
         message = (
             f'A clarification has been requested on the item ID: {instance.item.id}\n'
-            f'Store Code: {instance.item.store_code}\n'
+            f'CFA Code: {instance.item.store_code}\n'
             f'Category: {instance.item.category.name}\n'
             f'Comment: {instance.seek_comment}\n'
             f'Created By: {instance.item.assignee}\n'
             f'Created At: {instance.created_at}\n'
+            f'Visit Website: https://wwdsupport.titan.in/'
+
         )
     elif instance.status_check == 'clarified' and instance.clarified_comment:
         # Email for Clarification Provided
         subject = 'Clarification Provided'
         message = (
             f'A clarification has been provided for the item ID: {instance.item.id}\n'
-            f'Store Code: {instance.item.store_code}\n'
+            f'CFA Code: {instance.item.store_code}\n'
             f'Category: {instance.item.category.name}\n'
             f'Clarified Comment: {instance.clarified_comment}\n'
             f'Clarified By: {instance.item.created_by.username}\n'
             f'Created At: {instance.created_at}\n'
+            f'Visit Website: https://wwdsupport.titan.in/'
+
         )
 
     if subject:

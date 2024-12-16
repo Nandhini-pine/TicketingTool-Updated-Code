@@ -82,10 +82,6 @@ def Manager_base(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
 @allowed_users(allowed_roles=['Manager'])
-
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required
-@allowed_users(allowed_roles=['Manager'])
 def assign_ticket(request, id):
     item = get_object_or_404(Item, id=id)
 
